@@ -1,5 +1,11 @@
 # BollingerBands
 
+This project allow you to calculate the bollinger bands regarding indexes contained in a file.
+
+## Install
+
+Run `make`then `make clean`
+
 ## Usage
 
 
