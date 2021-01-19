@@ -7,7 +7,7 @@ This project allow you to calculate the bollinger bands regarding indexes contai
 To compile the project, run : `make`
 To run the tests : `make coverage`
 
-**Warning** : To be able to run the tests, make you installed the lib `criterion`
+**Warning** : To be able to run the tests, make sure you installed the lib `criterion`
 
 ## Usage
 
