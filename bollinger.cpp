@@ -14,52 +14,59 @@
 #include "input.hpp"
 #include "bollinger.hpp"
 
+/* Contrusctor  : getting file indexes */
 Bollinger::Bollinger(const char *file)
 {
 	std::string line;
-        std::ifstream myfile(file);
+	std::ifstream myfile(file);
 
-        if (myfile)
-        {
-                while (getline(myfile, line))
-                {
-                        this->values.push_back(line);
-                }
-        } else {
+	if (myfile)
+	{
+		while (getline(myfile, line))
+		{
+			this->values.push_back(line);
+		}
+	} else {
 		exit(84);
 	}
-        myfile.close();
+	myfile.close();
 	this->i = 0;
 	this->start = 0;
 }
 
+/* Destructor */
 Bollinger::~Bollinger()
 {
+	/* Nothing to do */
 }
 
 void Bollinger::run(Input In)
 {
-	std::cout << "OUTPUT" << std::endl;
+	/* Compute the results */
 	this->calculMoyenMobile(In);
-        std::cout << "MA: " << this->moyenne << std::endl;
 	this->calculEcartType(In.getPeriod());
-        this->calculBPlus(In);
-	std::cout << "B+: " << this->bp << std::endl;
+	this->calculBPlus(In);
 	this->calculBMoins(In);
+	
+	/* Print the results to the stdout */
+	std::cout << "OUTPUT" << std::endl;
+	std::cout << "MA: " << this->moyenne << std::endl;
+	std::cout << "B+: " << this->bp << std::endl;
 	std::cout << "B-: " << this->bm << std::endl;
 }
 
+/* Standard deviation calculation */
 void Bollinger::calculEcartType(int period)
 {
-        double variance = 0;
-        double carre = 0;
+	double variance = 0;
+	double carre = 0;
 
-        while (this->start <= this->i - 1)
-        {
-                carre = pow((atof(this->values[this->start].c_str()) - this->moyenne), 2);
-                variance = variance + (double)carre;
-                this->start++;
-        }
+	while (this->start <= this->i - 1)
+	{
+		carre = pow((atof(this->values[this->start].c_str()) - this->moyenne), 2);
+		variance = variance + (double)carre;
+		this->start++;
+	}
 	if (variance > 0) {
 		variance = variance / (double)period - 1.00;
 		this->sd = sqrt(variance);
@@ -72,23 +79,24 @@ void Bollinger::calculEcartType(int period)
 	}
 }
 
+/* Higher band calculation */
 void Bollinger::calculBPlus(Input In)
 {
         this->bp = this->moyenne + (this->sd * In.getCoef());
 }
 
+/* Lower band calculation */
 void Bollinger::calculBMoins(Input In)
 {
         this->bm = this->moyenne - (this->sd * In.getCoef());
 }
 
+/* Mobile average calculation */
 void Bollinger::calculMoyenMobile(Input In)
 {
 	std::vector<double> order;
-	int j = 0;
-
-        this->start = In.getIndex() - In.getPeriod() + 1;
-        this->i = 0;
+	this->start = In.getIndex() - In.getPeriod() + 1;
+	this->i = 0;
 
 	this->moyenne = 0.0;
 	if (this->start < 0)
@@ -100,16 +108,20 @@ void Bollinger::calculMoyenMobile(Input In)
                 this->i++;
         }
 	std::sort(order.begin(), order.end());
-	while (j < i){
-		this->moyenne += order[j];
-		j++;
+	
+	int inc = 0;
+	while (inc < i){
+		this->moyenne += order[inc];
+		inc++;
 	}
-        this->i = this->start;
+	this->i = this->start;
 	if (In.getPeriod() <= 0)
 		throw  std::invalid_argument("Division by 0 is forbidden");
-        this->start = In.getIndex() - In.getPeriod() + 1;
-        this->moyenne = (this->moyenne / In.getPeriod());
+	this->start = In.getIndex() - In.getPeriod() + 1;
+	this->moyenne = (this->moyenne / In.getPeriod());
 }
+
+/* --- Getters and setters --- */
 
 double Bollinger::getMoyenne() const
 {

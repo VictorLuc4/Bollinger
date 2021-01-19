@@ -6,12 +6,13 @@
 #include <iomanip>
 #include <string>
 
+/* Contructor */
 Input::Input(const char **av)
 {
-        std::string av1 = av[1];
-        std::string av2 = av[2];
+	std::string av1 = av[1];
+	std::string av2 = av[2];
 	std::string file = av[3];
-        std::string av4 = av[4];
+	std::string av4 = av[4];
 	std::string toCompare(file.substr(file.find_last_of(".") + 1));
 
 	if (toCompare.compare("txt") != 0)
@@ -25,9 +26,10 @@ Input::Input(const char **av)
 		exit(84);
 }
 
+/* Destructor */
 Input::~Input()
 {
-
+	/* Nothing to do */
 }
 
 void Input::printInput()
@@ -35,10 +37,11 @@ void Input::printInput()
 	std::cout << "INPUT" << std::endl;
 	std::cout << "Index: " << this->_index_nb << std::endl;
 	std::cout << "Period: " << this->_period << std::endl;
-	std::cout << "SD_coef: " << std::setprecision(2)
-		  << std::fixed << this->_coef << "\n" << std::endl;
+	std::cout << "SD_coef: " << std::setprecision(2) << 
+	std::fixed << this->_coef << "\n" << std::endl;
 }
 
+/* --- Getters and setters --- */
 
 void Input::setCoef(double coef)
 {
